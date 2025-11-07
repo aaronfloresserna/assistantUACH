@@ -1,0 +1,42 @@
+server:
+  port: 0  # Puerto aleatorio para evitar conflictos
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/luisamigo
+    username: luisamigo
+    password: luisamigo_secret
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+
+# Configuración de clientes para testing
+embedding:
+  provider: openai
+  model: text-embedding-3-small
+  openai:
+    api-key: ${OPENAI_API_KEY}
+    base-url: https://api.openai.com/v1
+
+llm:
+  provider: openai
+  model: ${OPENAI_MODEL:gpt-3.5-turbo}
+  openai:
+    api-key: ${OPENAI_API_KEY}
+    base-url: https://api.openai.com/v1
+    temperature: 0.3
+    max-tokens: 1000
+
+# Logging para testing
+logging:
+  level:
+    mx.uach.luisamigo: INFO
+    org.springframework.web: WARN
+    org.hibernate: WARN
