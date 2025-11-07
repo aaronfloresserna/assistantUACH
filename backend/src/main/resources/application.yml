@@ -1,0 +1,117 @@
+spring:
+  application:
+    name: luisamigo-backend
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/luisamigo}
+    username: ${SPRING_DATASOURCE_USERNAME:luisamigo}
+    password: ${SPRING_DATASOURCE_PASSWORD:luisamigo_dev_password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Usar 'validate' en producción, 'update' en desarrollo
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: false  # Usar Flyway en producción, deshabilitado por ahora
+
+# Configuración de LLM y Embeddings
+luisamigo:
+  llm:
+    provider: ${LLM_PROVIDER:openai}  # openai o anthropic
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      model: ${OPENAI_MODEL:gpt-4}
+      temperature: 0.1
+      max-tokens: 2000
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      model: ${ANTHROPIC_MODEL:claude-3-sonnet-20240229}
+      temperature: 0.1
+      max-tokens: 2000
+
+  embedding:
+    provider: ${EMBEDDING_PROVIDER:openai}  # openai
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+      dimensions: 1536
+
+  rag:
+    default-top-k: 5
+    max-top-k: 20
+    min-similarity-score: 0.7
+
+  ingestion:
+    batch-size: 50
+    max-chunk-size: 1000
+    chunk-overlap: 100
+
+# Server configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Logging
+logging:
+  level:
+    root: INFO
+    mx.uach.luisamigo: DEBUG
+    org.hibernate.SQL: ${SPRING_JPA_SHOW_SQL:false}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${SPRING_JPA_SHOW_SQL:false}
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+---
+# Profile: development
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    mx.uach.luisamigo: DEBUG
+
+---
+# Profile: production
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    mx.uach.luisamigo: INFO
