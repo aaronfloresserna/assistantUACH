@@ -21,9 +21,12 @@ public class DocumentEmbedding {
 
     // pgvector almacena como tipo 'vector'
     // En JPA lo manejamos como String y convertimos según sea necesario
-    // Alternativamente, se puede usar un converter personalizado
     @Column(name = "embedding", nullable = false, columnDefinition = "vector(1536)")
     private String embedding;  // Serializado como "[0.1, 0.2, ...]"
+
+    // Transient field para trabajar con el array en memoria
+    @Transient
+    private float[] embeddingArray;
 
     @Column(name = "model_name", nullable = false, length = 100)
     private String modelName;
@@ -36,10 +39,6 @@ public class DocumentEmbedding {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
-
-    // Transient field para trabajar con el array en memoria
-    @Transient
-    private float[] embeddingArray;
 
     // Lifecycle callbacks
     @PrePersist

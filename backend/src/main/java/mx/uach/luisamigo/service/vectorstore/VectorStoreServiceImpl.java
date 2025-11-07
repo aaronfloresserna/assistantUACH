@@ -73,14 +73,18 @@ public class VectorStoreServiceImpl implements VectorStoreService {
             try {
                 LegalDocument savedDocument = documentRepository.save(item.document());
 
-                DocumentEmbedding documentEmbedding = new DocumentEmbedding(
-                    savedDocument,
-                    item.embedding(),
+                // Serializar embedding a formato de string para pgvector
+                String embeddingStr = serializeEmbedding(item.embedding());
+
+                // Usar native query con CAST para insertar en pgvector
+                embeddingRepository.insertEmbeddingWithCast(
+                    savedDocument.getId(),
+                    embeddingStr,
                     embeddingClient.getModelName(),
-                    embeddingClient.getProviderName()
+                    embeddingClient.getProviderName(),
+                    1  // embedding_version
                 );
 
-                embeddingRepository.save(documentEmbedding);
                 successCount++;
 
             } catch (Exception e) {

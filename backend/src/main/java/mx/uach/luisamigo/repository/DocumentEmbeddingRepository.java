@@ -86,4 +86,21 @@ public interface DocumentEmbeddingRepository extends JpaRepository<DocumentEmbed
      */
     @Query("SELECT COUNT(e) FROM DocumentEmbedding e")
     long countEmbeddings();
+
+    /**
+     * Inserta un embedding usando native query con CAST para pgvector.
+     * Retorna el ID del embedding insertado.
+     */
+    @Query(value = "INSERT INTO document_embeddings " +
+                   "(document_id, embedding, model_name, model_provider, embedding_version, created_at) " +
+                   "VALUES (:documentId, CAST(:embeddingVector AS vector), :modelName, :modelProvider, :version, CURRENT_TIMESTAMP) " +
+                   "RETURNING id",
+           nativeQuery = true)
+    Long insertEmbeddingWithCast(
+        @Param("documentId") Long documentId,
+        @Param("embeddingVector") String embeddingVector,
+        @Param("modelName") String modelName,
+        @Param("modelProvider") String modelProvider,
+        @Param("version") Integer version
+    );
 }
