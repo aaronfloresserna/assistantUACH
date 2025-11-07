@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+}
+
+/* Markdown styling */
+.prose {
+  @apply text-gray-900;
+}
+
+.prose p {
+  @apply my-2;
+}
+
+.prose strong {
+  @apply font-semibold text-gray-900;
+}
+
+.prose ul,
+.prose ol {
+  @apply my-2 pl-6;
+}
+
+.prose li {
+  @apply my-1;
+}
+
+.prose code {
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm;
+}
