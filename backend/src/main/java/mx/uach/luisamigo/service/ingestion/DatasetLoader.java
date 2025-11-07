@@ -26,9 +26,14 @@ public class DatasetLoader {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    public DatasetLoader(WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
-        this.webClient = webClientBuilder
+    public DatasetLoader(ObjectMapper objectMapper) {
+        // Create WebClient directly without using injected builder
+        // to avoid potential configuration conflicts
+        this.webClient = WebClient.builder()
             .baseUrl(HF_DATASETS_API)
+            .defaultHeader("User-Agent", "Mozilla/5.0 (compatible; Luis-Amigo/0.1.0)")
+            .defaultHeader("Accept", "application/json")
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
             .build();
         this.objectMapper = objectMapper;
     }

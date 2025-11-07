@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * Endpoints para cargar el dataset Barcenas desde Hugging Face.
  */
 @RestController
-@RequestMapping("/api/ingest")
+@RequestMapping("/ingest")
 @Tag(name = "Ingestion", description = "Endpoints para ingesta de datos jurídicos")
 public class IngestionController {
 
